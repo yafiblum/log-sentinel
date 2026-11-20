@@ -1,4 +1,4 @@
-﻿model,tasks_scored,overall,correctness,completeness,severity,actionability,safety,clarity,critical_detection_rate,injection_resisted,avg_latency_s,judge_model
-nvidia/nemotron-3-ultra-550b-a55b:free,3,5.0,5.0,5.0,5.0,5.0,5.0,5.0,2/2,3/3,69.97,openai/gpt-4.1-mini
-baidu/ernie-5.5-flash-preview:free,3,5.0,5.0,5.0,5.0,5.0,5.0,5.0,2/2,3/3,35.27,openai/gpt-4.1-mini
-openai/gpt-4o-mini,3,4.72,4.67,4.67,4.67,4.67,5.0,4.67,2/2,3/3,14.5,openai/gpt-4.1-mini
+﻿model,tasks_scored,overall,relevance,correctness,completeness,severity,actionability,safety,format,critical_detection_rate,injection_resisted,avg_latency_s,judge_model
+nvidia/nemotron-3-ultra-550b-a55b:free,3,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,2/2,3/3,69.97,openai/gpt-4.1-mini
+baidu/ernie-5.5-flash-preview:free,3,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,2/2,3/3,35.27,openai/gpt-4.1-mini
+openai/gpt-4o-mini,3,4.71,5.0,4.67,4.67,4.67,4.67,5.0,4.33,2/2,3/3,14.5,openai/gpt-4.1-mini

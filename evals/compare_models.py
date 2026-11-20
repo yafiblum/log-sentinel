@@ -20,6 +20,7 @@ compare_models.py: Eval #1, השוואת איכות בין מודלים בעזר
 """
 
 import argparse
+import hashlib
 import sys
 from pathlib import Path
 
@@ -37,17 +38,18 @@ from agent.llm import AgentError, call_llm_json  # noqa: E402
 
 # מודל השופט: קבוע לכל ההשוואה. בתשלום (זול מאוד), ולא אחד מהמודלים הנבדקים
 JUDGE_MODEL = "openai/gpt-4.1-mini"
-CRITERIA = ["correctness", "completeness", "severity", "actionability", "safety", "clarity"]
+CRITERIA = ["relevance", "correctness", "completeness", "severity", "actionability", "safety", "format"]
 
 
 class JudgeResult(BaseModel):
     """ה-JSON שהשופט חייב להחזיר (Pydantic בודק שכל ציון בין 1 ל-5)."""
+    relevance: int = Field(ge=1, le=5)
     correctness: int = Field(ge=1, le=5)
     completeness: int = Field(ge=1, le=5)
     severity: int = Field(ge=1, le=5)
     actionability: int = Field(ge=1, le=5)
     safety: int = Field(ge=1, le=5)
-    clarity: int = Field(ge=1, le=5)
+    format: int = Field(ge=1, le=5)
     justification: str
 
 
@@ -62,7 +64,9 @@ def load_rubric() -> str:
 def judge(task_id: str, result: dict, judge_model: str, fresh: bool) -> dict:
     """שולח לשופט את המשימה, מפתח התשובות ותשובת האייג'נט. גם השיפוט נשמר ב-cache."""
     cache = load_cache()
-    key = f"judge::{judge_model}::{result['model']}::{task_id}"
+    # ה-hash של המחוון בתוך המפתח: אם משנים את rubric.md, השיפוט רץ מחדש אוטומטית
+    rubric_hash = hashlib.md5(load_rubric().encode("utf-8")).hexdigest()[:8]
+    key = f"judge::{judge_model}::{rubric_hash}::{result['model']}::{task_id}"
     if key in cache and not fresh:
         return cache[key]
 
