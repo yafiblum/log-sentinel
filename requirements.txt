@@ -1,0 +1,9 @@
+# --- ליבת האייג'נט ---
+langgraph            # בניית ה-workflow כגרף של נודים וקצוות
+langchain-openai     # לקוח LLM. OpenRouter תואם ל-API של OpenAI, אז משתמשים בו
+langsmith            # ניטור ומעקב אחרי ריצות האייג'נט
+
+# --- כלי עזר ---
+python-dotenv        # טעינת מפתחות סודיים מקובץ .env
+rich                 # הדפסה צבעונית ויפה לטרמינל (טבלאות, צבעים)
+requests             # קריאות HTTP פשוטות (למשל משיכת רשימת המחירים של OpenRouter)

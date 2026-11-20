@@ -1,0 +1,20 @@
+# סודות: לעולם לא עולים ל-GitHub
+.env
+
+# הסביבה הווירטואלית (כל אחד יוצר אחת אצלו)
+.venv/
+
+# קבצים זמניים של Python
+__pycache__/
+*.pyc
+
+# תוצרי בנייה של PyInstaller
+build/
+dist/
+*.spec
+
+# קבצים שהאייג'נט יוצר בזמן ריצה
+state.json
+outbox/
+logs/
+summaries/

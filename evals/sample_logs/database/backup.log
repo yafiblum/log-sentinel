@@ -1,0 +1,4 @@
+2026-11-18 02:00:00 INFO  Backup job started for orders_db
+2026-11-18 02:14:33 INFO  Dumped 1,204,551 rows (2.1GB)
+2026-11-18 02:15:10 INFO  Uploaded backup to s3://backups/orders_db/2026-11-18.sql.gz
+2026-11-18 02:15:11 INFO  Backup job finished successfully

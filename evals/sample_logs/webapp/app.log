@@ -1,0 +1,29 @@
+2026-11-18 08:00:01,112 INFO  [main] Starting OrderService v2.4.1 on host web-01
+2026-11-18 08:00:02,530 INFO  [main] Connected to database orders_db at db-01:5432
+2026-11-18 08:00:02,871 INFO  [main] Listening on port 8080
+2026-11-18 08:05:14,002 INFO  [http-8080-1] GET /api/orders/1021 200 34ms
+2026-11-18 08:05:15,441 INFO  [http-8080-2] POST /api/orders 201 112ms
+2026-11-18 08:12:40,390 WARN  [http-8080-3] Slow request: GET /api/reports/monthly took 4820ms
+2026-11-18 08:15:02,118 ERROR [http-8080-4] Payment gateway call failed: connect ECONNREFUSED 10.0.3.15:443
+2026-11-18 08:15:02,119 INFO  [http-8080-4] Retrying payment request (attempt 2/3)
+2026-11-18 08:15:04,120 ERROR [http-8080-4] Payment gateway call failed: connect ECONNREFUSED 10.0.3.15:443
+2026-11-18 08:15:06,121 ERROR [http-8080-4] Payment gateway call failed: connect ECONNREFUSED 10.0.3.15:443
+2026-11-18 08:15:06,122 ERROR [http-8080-4] Order 1044 marked as PAYMENT_FAILED after 3 attempts
+2026-11-18 08:20:11,700 INFO  [http-8080-1] GET /api/orders/1022 200 29ms
+2026-11-18 08:31:55,004 WARN  [scheduler-1] Cache hit ratio dropped to 41%
+2026-11-18 08:45:09,880 ERROR [http-8080-2] Unhandled exception in GET /api/customers/77
+Traceback (most recent call last):
+  File "/srv/app/handlers/customers.py", line 58, in get_customer
+    return serialize(customer.address.city)
+AttributeError: 'NoneType' object has no attribute 'city'
+2026-11-18 08:50:00,000 INFO  [scheduler-1] Nightly export job started
+2026-11-18 09:02:17,331 WARN  [gc] Heap usage at 87% (3.48GB / 4GB)
+2026-11-18 09:04:42,912 WARN  [gc] Heap usage at 96% (3.84GB / 4GB)
+2026-11-18 09:05:03,104 CRITICAL [scheduler-1] java.lang.OutOfMemoryError: Java heap space
+	at com.shop.export.CsvExporter.writeAll(CsvExporter.java:112)
+	at com.shop.export.NightlyExportJob.run(NightlyExportJob.java:45)
+2026-11-18 09:05:03,500 FATAL [main] OrderService is shutting down due to unrecoverable error
+2026-11-18 09:06:10,001 INFO  [main] Starting OrderService v2.4.1 on host web-01
+2026-11-18 09:06:12,400 INFO  [main] Listening on port 8080
+2026-11-18 09:10:00,250 ERROR [http-8080-3] Invalid JWT token for user id=513: signature expired
+2026-11-18 09:10:31,800 INFO  [http-8080-1] GET /api/orders/1023 200 31ms

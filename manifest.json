@@ -1,0 +1,49 @@
+{
+  "name": "LogSentinel Agent",
+  "version": "1.0.0",
+  "description": "An AI agent that scans a folder of log files, reads only the lines added since the last scan, classifies and explains the errors (root cause, impact, fix), and drafts alert emails for critical failures that are sent only after human approval.",
+  "creator_name": "Yafi Blum",
+  "contact_information": "yafiblum@gmail.com",
+  "release_date": "2026-11-20",
+  "repository_url": "https://github.com/yafiblum/log-sentinel",
+  "download_url": "https://github.com/yafiblum/log-sentinel/releases/download/v1.0.0/agent.exe",
+  "target_audience": "DevOps Engineers, SRE, On-call Developers, IT Support",
+  "professional_fields": [
+    "DevOps", "Site Reliability Engineering", "Incident Management", "Software Development"
+  ],
+  "tasks_capable_of_performing": [
+    "Incremental Log Folder Scanning (new lines only)",
+    "Error Detection and Severity Classification",
+    "Root Cause Analysis with Fix Recommendations",
+    "Incident Report Summarization",
+    "Critical Alert Email Drafting with Human Approval",
+    "Error Explanation with Stack Overflow Sources"
+  ],
+  "examples_of_suitable_questions": [
+    "scan C:\\logs\\server",
+    "Check the logs in C:\\logs\\webapp from the beginning",
+    "What does ECONNREFUSED mean and how do I fix it?",
+    "Why does nginx return 502 Bad Gateway?"
+  ],
+  "technical_specifications": {
+    "framework": "LangGraph",
+    "llm_provider": "OpenRouter",
+    "supported_models": [
+      "nvidia/nemotron-3-ultra-550b-a55b:free",
+      "baidu/ernie-5.5-flash-preview:free",
+      "openai/gpt-4o-mini"
+    ],
+    "features_enabled": {
+      "rag": false,
+      "web_search": true,
+      "code_execution": false,
+      "mcp_support": false
+    },
+    "required_permissions": [
+      "local_file_read",
+      "local_file_write",
+      "network_access",
+      "smtp_email_send"
+    ]
+  }
+}

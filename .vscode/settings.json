@@ -1,0 +1,14 @@
+{
+    // איזה Python להשתמש: זה שבסביבה הווירטואלית של הפרויקט
+    "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+    // כשפותחים טרמינל חדש ב-VS Code, הסביבה הווירטואלית מופעלת אוטומטית
+    "python.terminal.activateEnvironment": true,
+    // כדי שעברית תודפס נכון בטרמינל
+    "terminal.integrated.env.windows": {
+        "PYTHONIOENCODING": "utf-8"
+    },
+    // להסתיר תיקיות שלא צריך לראות ברשימת הקבצים
+    "files.exclude": {
+        "**/__pycache__": true
+    }
+}

@@ -1,0 +1,55 @@
+{
+    // הגדרות הרצה ודיבאג. בוחרים אחת מהרשימה בלשונית Run and Debug (Ctrl+Shift+D) ולוחצים F5
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "▶ LogSentinel CLI (אינטראקטיבי)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "agent.cli",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "🐞 שאלה אחת (נוח לדיבאג)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "agent.cli",
+            "args": ["--ask", "what does ECONNREFUSED mean in a log?"],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "📂 סריקת הלוגים לדוגמה (--all)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "agent.cli",
+            "args": ["--ask", "scan evals/sample_logs --all"],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "🪞 האייג'נט סורק את הלוגים של עצמו",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "agent.cli",
+            "args": ["--ask", "scan logs --all"],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "🚫 שאלה מחוץ לתחום (בדיקת guardrail)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "agent.cli",
+            "args": ["--ask", "תכתוב לי שיר על חתולים"],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}
