@@ -7,3 +7,7 @@ langsmith            # ניטור ומעקב אחרי ריצות האייג'נט
 python-dotenv        # טעינת מפתחות סודיים מקובץ .env
 rich                 # הדפסה צבעונית ויפה לטרמינל (טבלאות, צבעים)
 requests             # קריאות HTTP פשוטות (למשל משיכת רשימת המחירים של OpenRouter)
+
+# --- מסלול Desktop (בונוס): שרת ה-sidecar ---
+fastapi              # שרת HTTP שממשק ה-React מדבר איתו
+uvicorn              # מריץ את שרת ה-FastAPI

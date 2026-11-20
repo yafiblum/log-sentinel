@@ -173,6 +173,51 @@ copy .env.example .env        # ואז למלא את המפתחות
 
 ---
 
+## 🖥️ Desktop App (מסלול בונוס)
+
+אפליקציית Desktop שנבנתה עם **React + Tauri + FastAPI sidecar**. היא מריצה **אותו גרף בדיוק** כמו ה-CLI, ומוסיפה ממשק גרפי.
+
+```text
+┌──────────────── חלון Tauri (log-sentinel.exe) ────────────────┐
+│  ממשק React  ──HTTP + SSE──►  server.exe (FastAPI, Python)    │
+│                               └─► agent/ (אותו גרף LangGraph) │
+└────────────────────────────────────────────────────────────────┘
+```
+
+- **Tauri (Rust)** פותח את החלון, מפעיל את `server.exe` ברקע ומעביר לו את ה-PID שלו. השרת "שומר" על ה-PID ונסגר לבד כשהאפליקציה נסגרת, גם אם היא קרסה
+- **FastAPI** (`server.py`) מתרגם את הגרף ל-HTTP. `/run` ו-`/resume` מחזירים **Streaming (SSE)** של אירועים: נוד מתחיל, נוד מסתיים, תשובה, בקשת אישור, סיום
+- **React** (`desktop/src`) מציג את האירועים בזמן אמת
+
+| דרישה | במימוש |
+|---|---|
+| עזרה | כפתור ❓ שפותח מדריך |
+| גרירת קבצים | גרירת תיקייה או קובץ לחלון (Tauri מחזיר נתיב מלא), או לחיצה לבחירה |
+| רשימת כלים + אוטנטיקציה | פאנל צד עם מצב כל כלי. "הגדר" פותח טופס למפתח OpenRouter או לפרטי SMTP |
+| אישור פעולות רגישות (HITL) | חלון עם תצוגה מקדימה של המייל וכפתורי "שלח" / "בטל" |
+| Streaming | כל נוד מופיע כתגית: ⏳ בזמן ריצה, ✓ עם זמן ופירוט בסיום |
+| שגיאות ברורות | תיבה אדומה עם ההסבר והפתרון |
+| עלות ושימוש | פאנל עלות מצטברת, ובסוף כל משימה פירוט לפי נוד |
+| תקציר שיחה | כפתור 📄 ששומר קובץ `.txt` |
+
+**התקנה:** הורידי את `LogSentinel_1.0.0_x64-setup.exe` מעמוד ה-Releases והתקיני (בלי הרשאות מנהל).
+בהפעלה הראשונה לחצי "הגדר" ליד OpenRouter והזיני מפתח. ההגדרות והקבצים נשמרים ב-`%APPDATA%\LogSentinel`.
+
+**בנייה מקוד המקור** (דורש Node.js, Rust ו-MinGW):
+```powershell
+# 1. השרת: server.exe בלי חלון קונסולה, בשם שה-sidecar של Tauri מצפה לו
+.venv\Scripts\pyinstaller --onefile --noconsole --name server --collect-submodules uvicorn --collect-data tiktoken_ext --hidden-import tiktoken_ext.openai_public server.py
+copy dist\server.exe desktop\src-tauri\binaries\server-x86_64-pc-windows-gnu.exe
+# 2. האפליקציה וקובץ ההתקנה
+cd desktop
+npm install
+npx tauri build --target x86_64-pc-windows-gnu
+```
+> נבנה עם ה-toolchain של GNU (MinGW) במקום MSVC, כי ההתקנה של Visual Studio Build Tools דורשת הרשאות מנהל.
+
+**פיתוח:** `.venv\Scripts\python server.py` בטרמינל אחד, ו-`cd desktop && npx vite` בשני. הממשק נפתח בדפדפן ב-`http://localhost:1420`.
+
+---
+
 ## 📊 Evals
 
 שלוש בדיקות, ב-`evals/`. התוצאות נשמרות כ-CSV ב-`evals/results/`.
@@ -243,6 +288,8 @@ log-sentinel/
 │   ├── sample_logs/     # לוגים לדוגמה
 │   └── results/         # תוצאות CSV
 ├── run_agent.py         # נקודת הכניסה של agent.exe
+├── server.py            # שרת FastAPI (sidecar) לאפליקציית ה-Desktop
+├── desktop/             # React + Tauri
 ├── manifest.json
 ├── requirements.txt
 ├── .env.example
