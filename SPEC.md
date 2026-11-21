@@ -218,20 +218,21 @@ class AgentState(TypedDict):
 
 | הרחבה | שימוש |
 |---|---|
-| **Web-Search** (DuckDuckGo, ללא מפתח) | חיפוש הסבר לקודי שגיאה לא מוכרים |
+| **Web-Search** (Stack Overflow API, ללא מפתח) | חיפוש הסבר לקודי שגיאה, עם מקורות. נבחר במקום DuckDuckGo, שחסום ברשת הארגונית |
 | **Tools / File system** | סריקת תיקיות וקריאת קבצים |
 | **Email Tool** | שליחת התראות |
-| *(אופציונלי)* **RAG** | מאגר "Runbooks" (מסמכי פתרון תקלות ידועות של הארגון), שהאייג'נט מחפש בו לפני שהוא מחפש ברשת |
+| *(לא מומש)* **RAG** | רעיון להמשך: מאגר "Runbooks" (מסמכי פתרון תקלות ידועות של הארגון) |
 
 ---
 
 ## 9. מודלים (OpenRouter)
 
-| תפקיד | מודל (סופי ייקבע בשלב המימוש לפי הזמינות) |
+| תפקיד | מודל (כפי שמומש) |
 |---|---|
-| ברירת מחדל (חינמי) | מודל `:free` (למשל Llama / Gemma / DeepSeek) |
-| בתשלום (להשוואה) | למשל `openai/gpt-4o-mini` |
-| שופט (Judge) קבוע ב-Evals | מודל אחד קבוע לכל ההשוואות |
+| ברירת מחדל (חינמי) | `nvidia/nemotron-3-ultra-550b-a55b:free`, עם מודלי גיבוי חינמיים במקרה של 429 |
+| בתשלום (להשוואה) | `openai/gpt-4o-mini` |
+| חינמי נוסף (להשוואה) | `baidu/ernie-5.5-flash-preview:free` |
+| שופט (Judge) קבוע ב-Evals | `openai/gpt-4.1-mini`, temperature=0 |
 
 העלות מחושבת לפי `tokens × מחיר המודל`. המחירים נמשכים מה-API של OpenRouter (`/api/v1/models`). עבור מודלים חינמיים מוצגת גם **עלות תיאורטית** לפי מחיר של מודל שווה-ערך בתשלום.
 
@@ -243,15 +244,16 @@ class AgentState(TypedDict):
 
 | Eval | קובץ | מה נמדד | עמודות ב-CSV |
 |---|---|---|---|
-| **1. השוואת מודלים** | `compare_models.py` | אותה סריקה על 3 מודלים לפחות. ציון ע"י LLM-as-judge לפי `rubric.md` | model, time_sec, quality, reliability, data_quality, judge_notes, cost |
-| **2. עלויות** | `cost_eval.py` | 3–4 משימות נפוצות, עלות לכל נוד ועלות כוללת, כולל מודל בתשלום | task, model, node, tokens_in, tokens_out, actual_cost, theoretical_cost |
-| **3. אי-זליגה** | `scope_eval.py` | לפחות 8 שאלות מחוץ לתחום (כולל ניסיונות Prompt Injection) | question, expected, got, refused, passed + שורת refusal rate |
+| **1. השוואת מודלים** | `compare_models.py` | אותה סריקה על 3 מודלים לפחות. ציון ע"י LLM-as-judge לפי `rubric.md` | model, task, 7 ציוני קריטריונים, overall, critical_ok, injection_ok, latency_s, judge_justification |
+| **2. עלויות** | `cost_eval.py` | 3 משימות נפוצות, עלות לכל נוד ועלות כוללת, כולל מודל בתשלום | model, task, llm_calls, input_tokens, output_tokens, actual_cost_usd, theoretical_cost_usd (+ קובץ פירוט לפי נוד) |
+| **3. אי-זליגה** | `scope_eval.py` | 8 שאלות מחוץ לתחום, 3 ניסיונות Injection ו-5 שאלות לגיטימיות (לבדיקת סירוב שגוי) | category, question, expected, actual, correct, decided_by + קובץ סיכום עם refusal rate |
 
 **ה-Rubric** (`evals/rubric.md`), ציון 1–5 לכל קריטריון:
 - רלוונטיות לתפקיד
 - דיוק עובדתי (האם זוהו התקלות הנכונות?)
 - שלמות (האם כל התקלות הקריטיות נמצאו?)
 - עמידה בפורמט הנדרש
+- ובנוסף, מותאם לאייג'נט: חומרה נכונה, ישימות הפתרונות, ובטיחות (עמידות ל-Injection)
 
 ---
 
@@ -418,7 +420,7 @@ log-sentinel/
 
 ```
 ┌───────────────────────────────────────────────────────────────────┐
-│  🛡️ LogSentinel                      [מודל: llama ▾]  [❓ עזרה]   │
+│  🛡️ LogSentinel                      [מודל: nemotron ▾]  [❓ עזרה]   │
 ├──────────────┬────────────────────────────────────────────────────┤
 │ 🔌 כלים      │                                                    │
 │              │   [מה שהמשתמשת כתבה]                               │
@@ -455,17 +457,17 @@ log-sentinel/
 - **Filesystem MCP**: גישה לתיקיות הלוגים דרך MCP במקום קריאה ישירה.
 - **Gmail / Slack MCP**: שליחת ההתראה דרך MCP (כאן נדרשת אוטנטיקציה, וזה בדיוק המקרה שהמסמך מתאר).
 
-את זה מחליטים בשלב 14, לפי הזמן שנשאר.
+**החלטה:** MCP לא מומש. פאנל הכלים מציג את הכלים האמיתיים (OpenRouter, Web Search, Email, LangSmith, File System) ומאפשר הזנת פרטי אוטנטיקציה ל-OpenRouter ול-SMTP.
 
 ### 14.6 התקנות נדרשות למסלול B
 
-נבדק על המחשב הזה: **אף אחד מהכלים האלה לא מותקן כרגע.**
+**מה נעשה בפועל:** אין הרשאות מנהל במחשב, ולכן Build Tools של Microsoft לא הותקנו. במקומם נבנה עם Rust GNU + MinGW, שאפשר להתקין ברמת המשתמש.
 
 | כלי | למה צריך | הערה |
 |---|---|---|
 | **Node.js** (גרסת LTS) | בניית ממשק ה-React | |
 | **Rust** (דרך `rustup`) | Tauri כתוב ב-Rust | |
-| **Microsoft C++ Build Tools** | נדרש ל-Rust ב-Windows | התקנה גדולה (כמה GB) |
+| ~~Microsoft C++ Build Tools~~ → **MinGW (WinLibs)** | linker ו-windres ל-Rust GNU | בלי הרשאות מנהל |
 | **WebView2** | מנוע התצוגה של Tauri | כבר מובנה ב-Windows 11 ✓ |
 
 > ⚠️ במחשב ארגוני ייתכן שההתקנות האלה דורשות הרשאות מנהל. כדאי לבדוק את זה מראש. אם אי אפשר, אפשר לבנות את מסלול B על מחשב אחר.
@@ -473,4 +475,4 @@ log-sentinel/
 ### 14.7 הגשה במסלול B
 - ב-Release יהיו **שני קבצים**: `agent.exe` (CLI) וקובץ ההתקנה של האפליקציה (`LogSentinel_1.0.0_x64-setup.exe`).
 - ב-`manifest.json` הקישור `download_url` נשאר ל-`agent.exe`, כי הוא מסלול החובה.
-- ב-README יתווסף פרק "Desktop App" עם צילומי מסך והוראות.
+- ב-README יש פרק "Desktop App" עם ארכיטקטורה, מיפוי דרישות והוראות התקנה ובנייה.
